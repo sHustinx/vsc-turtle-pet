@@ -1,0 +1,48 @@
+{
+  "name": "vsc-turtle-pet",
+  "displayName": "Turtle Pet",
+  "description": "A VS Code extension that displays a cute turtle pet in a webview for emotional support",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onView:turtle-pet-view"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "views": {
+      "explorer": [
+        {
+          "id": "turtle-pet-view",
+          "name": "Turtle Pet",
+          "icon": "media/icon.png",
+          "type": "webview"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "vsc-turtle-pet.showTurtle",
+        "title": "Show Turtle Pet"
+      }
+    ]
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "turtle",
+    "pet",
+    "virtual pet",
+    "cute",
+    "mascot",
+    "companion",
+    "emotional support"
+  ],
+  "author": "sHustinx",
+  "license": "MIT"
+}

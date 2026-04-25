@@ -1,0 +1,179 @@
+const vscode = require('vscode');
+
+/**
+ * @param {vscode.ExtensionContext} context
+ */
+function activate(context) {
+    console.log('Turtle Pet extension is now active!');
+
+    // Register the webview view provider
+    const provider = new TurtleWebviewView(context);
+    context.subscriptions.push(
+        vscode.window.registerWebviewViewProvider('turtle-pet-view', provider)
+    );
+}
+
+class TurtleWebviewView {
+    constructor(context) {
+        this.context = context;
+    }
+
+    resolveWebviewView(webviewView) {
+        // Configure the webview
+        webviewView.webview.options = {
+            enableScripts: true,
+            localResourceRoots: [this.context.extensionUri]
+        };
+
+        // get turtle image
+        const turtleUri = webviewView.webview.asWebviewUri(
+            vscode.Uri.joinPath(this.context.extensionUri, 'media', 'turtle-new.png')
+        );
+
+        // set the webview HTML content
+        webviewView.webview.html = getWebviewContent(turtleUri.toString());
+    }
+}
+
+function getWebviewContent(turtleUri) {
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turtle Pet</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            /*background: linear-gradient(180deg, #212121 0%, #292929 85%, #212121 100%);*/
+            background: linear-gradient(180deg, #262626 0%, #1f1f1f 78%, #383838 79%, #2e2e2e 100%);
+            overflow: hidden;
+        }
+        .playground {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+        .turtle {
+            position: absolute;
+            width: 80px;
+            height: auto;
+            cursor: pointer;
+            transition: left 0.05s linear;
+        }
+        .turtle:hover {
+            scale: 1.05;
+        }
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.5s;
+        }
+        .heart.show {
+            opacity: 1;
+            transform: translateY(-30px);
+        }
+    </style>
+</head>
+<body>
+    <div class="playground">
+        <img src="${turtleUri}" alt="Turtle" class="turtle" id="turtle">
+        <div class="heart" id="heart">❤️</div>
+    </div>
+
+    <script>
+        const turtle = document.getElementById('turtle');
+        const heart = document.getElementById('heart');
+        
+        // init turtle
+        // start at 50%, facing right
+        let posX = 50;
+        let dirX = 1;
+        let targetX = null;
+        turtle.style.left = posX + '%';
+        turtle.style.bottom = '10%';
+        turtle.style.top = 'auto';
+        turtle.style.transform = 'scaleX(-1)';
+        let state = 'rest'; // movement state: either rest or walking
+        
+        // flip turtle png direction towards target
+        function updateDirection() {
+            turtle.style.transform = dirX > 0 ? 'scaleX(-1)' : 'scaleX(1)';
+        }
+
+        function moveTurtle() {
+            if (state === 'rest') return;
+            
+            const speed = 0.1;
+            const dx = targetX - posX; // distance to target
+            
+            // if desination reached, rest then pick new target destnation
+            if (Math.abs(dx) < 1) {
+                posX = targetX;
+                turtle.style.left = posX + '%';
+                state = 'rest';
+                setTimeout(initMovement, 5000 + Math.random() * 5000);
+                return;
+            }
+            
+            // move towards target
+            posX += Math.sign(dx) * speed;
+            turtle.style.left = posX + '%';
+            
+            requestAnimationFrame(moveTurtle);
+        }
+        
+        // show heart above turtle, then hide again 
+        function showHeart() {
+            heart.style.left = turtle.style.left;
+            heart.style.bottom = '30%';
+            heart.classList.add('show');
+            
+            setTimeout(() => {
+                heart.classList.remove('show');
+            }, 500);
+        }
+
+        // Pick a random destination (between 10% and 80%), start moving towards it, and flip png direction accordingly
+        function initMovement() {
+            state = 'walking';
+            targetX = 10 + Math.random() * 70;
+            dirX = targetX > posX ? 1 : -1;
+            updateDirection();
+            moveTurtle();
+        }
+        
+        // Start with a longer rest period, then begin walking
+        setTimeout(initMovement, 3000);
+        
+        // onclick on turtle: show heart and wake up to walk somewhere new
+        turtle.onclick = () => {
+            showHeart();
+            if (state === 'rest') {
+                // Pick a new destination
+                initMovement();
+            } else {
+                // Pick a new random destination, flip png accordingly
+                targetX = 10 + Math.random() * 70;
+                dirX = targetX > posX ? 1 : -1;
+                updateDirection();
+            }
+        };
+    </script>
+</body>
+</html>`;
+}
+
+function deactivate() {}
+
+module.exports = {
+    activate,
+    deactivate
+};
