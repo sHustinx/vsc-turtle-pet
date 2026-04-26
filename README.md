@@ -8,6 +8,6 @@ Meet *Mono the turtle*, your calm, low-maintenance companion who lives quietly i
 He also enjoys the occasional pet ❤️ -> [VS Marketplace](https://marketplace.visualstudio.com/items?itemName=sHustinx.vsc-turtle-pet)
 
 ---
-<img width="300" height="auto" alt="image" src="https://github.com/user-attachments/assets/999e37c5-016a-4439-9af4-3a9284f83164" />
+<img width="300" height="auto" alt="20260426-1014-52 7572346" src="https://github.com/user-attachments/assets/b9de6802-a3b9-45d0-b0d5-8b39850b8cd5" />
 
 
