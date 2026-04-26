@@ -143,7 +143,7 @@ function getWebviewContent(turtleUri, turtleWalking1Uri, turtleWalking2Uri) {
             
             startWalkingAnimation();
             
-            const speed = 0.1;
+            const speed = 0.05;
             const dx = targetX - posX; // distance to target
             
             // if desination reached, rest then pick new target destnation
@@ -152,7 +152,7 @@ function getWebviewContent(turtleUri, turtleWalking1Uri, turtleWalking2Uri) {
                 turtle.style.left = posX + '%';
                 state = 'rest';
                 stopWalkingAnimation();
-                setTimeout(initMovement, 5000 + Math.random() * 5000);
+                setTimeout(initMovement, 10000 + Math.random() * 5000);
                 return;
             }
             
