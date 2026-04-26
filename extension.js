@@ -25,17 +25,23 @@ class TurtleWebviewView {
             localResourceRoots: [this.context.extensionUri]
         };
 
-        // get turtle image
+        // get turtle images
         const turtleUri = webviewView.webview.asWebviewUri(
             vscode.Uri.joinPath(this.context.extensionUri, 'media', 'turtle-new.png')
         );
+        const turtleWalking1Uri = webviewView.webview.asWebviewUri(
+            vscode.Uri.joinPath(this.context.extensionUri, 'media', 'mono-walking-1.png')
+        );
+        const turtleWalking2Uri = webviewView.webview.asWebviewUri(
+            vscode.Uri.joinPath(this.context.extensionUri, 'media', 'mono-walking-2.png')
+        );
 
         // set the webview HTML content
-        webviewView.webview.html = getWebviewContent(turtleUri.toString());
+        webviewView.webview.html = getWebviewContent(turtleUri.toString(), turtleWalking1Uri.toString(), turtleWalking2Uri.toString());
     }
 }
 
-function getWebviewContent(turtleUri) {
+function getWebviewContent(turtleUri, turtleWalking1Uri, turtleWalking2Uri) {
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -89,6 +95,10 @@ function getWebviewContent(turtleUri) {
     </div>
 
     <script>
+        const turtleUri = "${turtleUri}";
+        const turtleWalking1Uri = "${turtleWalking1Uri}";
+        const turtleWalking2Uri = "${turtleWalking2Uri}";
+        
         const turtle = document.getElementById('turtle');
         const heart = document.getElementById('heart');
         
@@ -102,14 +112,36 @@ function getWebviewContent(turtleUri) {
         turtle.style.top = 'auto';
         turtle.style.transform = 'scaleX(-1)';
         let state = 'rest'; // movement state: either rest or walking
+        let walkFrame = 1; // current walking frame (1 or 2)
+        let walkInterval = null; // interval for switching frames
         
         // flip turtle png direction towards target
         function updateDirection() {
             turtle.style.transform = dirX > 0 ? 'scaleX(-1)' : 'scaleX(1)';
         }
 
+        function startWalkingAnimation() {
+            if (walkInterval) return; // already animating
+            walkFrame = 1;
+            turtle.src = turtleWalking1Uri;
+            walkInterval = setInterval(() => {
+                walkFrame = walkFrame === 1 ? 2 : 1;
+                turtle.src = walkFrame === 1 ? turtleWalking1Uri : turtleWalking2Uri;
+            }, 300); // switch every 300ms
+        }
+
+        function stopWalkingAnimation() {
+            if (walkInterval) {
+                clearInterval(walkInterval);
+                walkInterval = null;
+            }
+            turtle.src = turtleUri;
+        }
+
         function moveTurtle() {
             if (state === 'rest') return;
+            
+            startWalkingAnimation();
             
             const speed = 0.1;
             const dx = targetX - posX; // distance to target
@@ -119,6 +151,7 @@ function getWebviewContent(turtleUri) {
                 posX = targetX;
                 turtle.style.left = posX + '%';
                 state = 'rest';
+                stopWalkingAnimation();
                 setTimeout(initMovement, 5000 + Math.random() * 5000);
                 return;
             }
@@ -144,6 +177,7 @@ function getWebviewContent(turtleUri) {
         // Pick a random destination (between 10% and 80%), start moving towards it, and flip png direction accordingly
         function initMovement() {
             state = 'walking';
+            startWalkingAnimation();
             targetX = 10 + Math.random() * 70;
             dirX = targetX > posX ? 1 : -1;
             updateDirection();
