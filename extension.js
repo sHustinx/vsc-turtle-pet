@@ -38,63 +38,29 @@ class TurtleWebviewView {
         const jsUri = webviewView.webview.asWebviewUri(
             vscode.Uri.joinPath(this.context.extensionUri, 'webview', 'webview.js')
         );
+        const cssUri = webviewView.webview.asWebviewUri(
+            vscode.Uri.joinPath(this.context.extensionUri, 'webview', 'webview.css')
+        );
 
         // set the webview HTML content
         webviewView.webview.html = getWebviewContent(
             turtleUri.toString(),
             turtleWalking1Uri.toString(),
             turtleWalking2Uri.toString(),
-            jsUri.toString()
+            jsUri.toString(),
+            cssUri.toString()
         );
     }
 }
 
-function getWebviewContent(turtleUri, turtleWalking1Uri, turtleWalking2Uri, jsUri) {
+function getWebviewContent(turtleUri, turtleWalking1Uri, turtleWalking2Uri, jsUri, cssUri) {
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Turtle Pet</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
-            padding: 0;
-            /*background: linear-gradient(180deg, #212121 0%, #292929 85%, #212121 100%);*/
-            background: linear-gradient(180deg, #262626 0%, #1f1f1f 78%, #383838 79%, #2e2e2e 100%);
-            overflow: hidden;
-        }
-        .playground {
-            flex: 1;
-            position: relative;
-            overflow: hidden;
-        }
-        .turtle {
-            position: absolute;
-            width: 80px;
-            height: auto;
-            cursor: pointer;
-            transition: left 0.05s linear;
-        }
-        .turtle:hover {
-            scale: 1.05;
-        }
-        .heart {
-            position: absolute;
-            font-size: 20px;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s, transform 0.5s;
-        }
-        .heart.show {
-            opacity: 1;
-            transform: translateY(-30px);
-        }
-    </style>
+    <link rel="stylesheet" href="${cssUri}">
 </head>
 <body>
     <div class="playground">
