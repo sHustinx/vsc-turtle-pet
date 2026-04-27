@@ -31,14 +31,12 @@ body {
 .heart {
     position: absolute;
     font-size: 20px;
-    visibility: hidden;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s, transform 0.5s;
 }
 
 .heart.show {
-    visibility: visible;
     opacity: 1;
     transform: translateY(-30px);
 }

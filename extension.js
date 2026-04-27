@@ -60,9 +60,26 @@ function getWebviewContent(turtleUri, turtleWalking1Uri, turtleWalking2Uri, jsUr
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Turtle Pet</title>
-    <link rel="stylesheet" href="${cssUri}"> 
+    <style>body.turtle-hidden{visibility:hidden;}</style>
+    <link id="main-css" rel="stylesheet" href="${cssUri}">
+    <script>
+        const cssLink = document.getElementById('main-css');
+        const reveal = () => document.body.classList.remove('turtle-hidden');
+        const tryReveal = () => {
+            try {
+                if (cssLink.sheet && cssLink.sheet.cssRules) {
+                    reveal();
+                }
+            } catch (e) {
+                // stylesheet not ready yet
+            }
+        };
+        cssLink.addEventListener('load', reveal);
+        cssLink.addEventListener('error', reveal);
+        requestAnimationFrame(tryReveal);
+    </script>
 </head>
-<body>
+<body class="turtle-hidden">
     <div class="playground">
         <img src="${turtleUri}" alt="Turtle" class="turtle" id="turtle">
         <div class="heart" id="heart">❤️</div>
