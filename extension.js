@@ -60,7 +60,7 @@ function getWebviewContent(turtleUri, turtleWalking1Uri, turtleWalking2Uri, jsUr
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Turtle Pet</title>
-    <link rel="stylesheet" href="${cssUri}">
+    <link rel="stylesheet" href="${cssUri}"> 
 </head>
 <body>
     <div class="playground">
