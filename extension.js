@@ -91,7 +91,7 @@ function getWebviewContent(turtleUri, turtleWalking1Uri, turtleWalking2Uri, jsUr
         const turtleWalking2Uri = "${turtleWalking2Uri}";
     </script>
 
-    <script src="${jsUri}"></script>
+    <script type="module" src="${jsUri}"></script>
 </body>
 </html>`;
 }
