@@ -12,7 +12,7 @@ export class StateWalking extends State {
 
     enter() {
         // pick new target destination and face towards it
-        this.targetX = getRandomTargetX();
+        this.targetX = this.getRandomTargetX();
         this.turtle.dirX = this.targetX > this.turtle.posX ? 1 : -1;
         this.turtle.element.style.transform = this.turtle.dirX > 0 ? 'scaleX(-1)' : 'scaleX(1)';
 
@@ -38,7 +38,7 @@ export class StateWalking extends State {
         this.turtle.element.style.left = this.turtle.posX + '%';
     }
 
-    perform(stateMachine) {        
+    perform(stateMachine) {  
         let speed = 0.05;
         this.turtle.dx = this.targetX - this.turtle.posX; // distance to target
         
@@ -53,5 +53,16 @@ export class StateWalking extends State {
         this.turtle.element.style.left = this.turtle.posX + '%';
 
         return this;
+    }
+
+    // get random target X position, accounting for turtle png width (80px)
+    // (otherwise he walks off the screen)
+    getRandomTargetX() {
+        const containerWidth = document.querySelector('.playground').offsetWidth;
+        const turtleWidth = 80;
+        const maxX = ((containerWidth - turtleWidth) / containerWidth) * 100; 
+        const newTarget = 10 + (Math.random() * (maxX - 10));
+        // console.log('getRandomTargetX:', newTarget, 'posX:', posX);
+        return newTarget;
     }
 }

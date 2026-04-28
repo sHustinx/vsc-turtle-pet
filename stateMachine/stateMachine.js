@@ -1,9 +1,11 @@
 import { State } from "./state.js";
 
 export class StateMachine {
-    constructor(currentState) {
-        this.isValidState(currentState);
-        this.currentState = currentState;
+    constructor(initialState) {
+        this.isValidState(initialState);
+        this.currentState = initialState;
+        this.nextState = null;
+        this.isFresh = true; // flag to indicate if the machine has just started
     }
 
     isValidState(state) {
@@ -31,22 +33,28 @@ export class StateMachine {
     }
 
     run() {
-        // Transition to next state if set.
-        if (this.nextState) {
+        if(this.isFresh) {
+            debugger;
+            this.currentState?.enter();
+            this.isFresh = false;
+        } else if (this.nextState && this.nextState !== this.currentState) { 
+            debugger;
+            this.currentState?.exit();
+            this.nextState.enter();
             this.currentState = this.nextState;
             this.nextState = null;
         }
 
-        if (!this.currentState) {
-            throw new Error("Turtle.exe has stopped working.");
+        this.nextState = this.step();
+
+        // self transition
+        if(!this.nextState) {
+            debugger;
+            this.currentState.exit();
+            this.currentState.enter();
         }
-
-        this.currentState.enter();
-        this.nextState = this.currentState.perform(this);
-        this.currentState.exit();
-        this.currentState = null; // Clear current state after performing
-
-        requestAnimationFrame(() => this.step());
+        
+        requestAnimationFrame(() => this.run());
     }
 
     step() {
@@ -54,16 +62,12 @@ export class StateMachine {
             throw new Error("Turtle.exe has stopped working.");
         }
 
-        targetState = this.currentState.perform(this);
+        let targetState = this.currentState.perform(this);
 
-        if(this.nextState) {
+        if(this.nextState && this.nextState !== this.currentState) {
             return this.nextState; // if a forced state is set, transition to it immediately
         }
 
-        if (targetState !== this.currentState) {
-            return targetState;
-        }
-
-        requestAnimationFrame(() => this.step());
+        return targetState; // otherwise transition to the state returned by perform (if any)
     }
 }

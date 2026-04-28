@@ -4,7 +4,6 @@ import {StateRest} from '../stateMachine/stateRest.js';
 
 export class Turtle {
     constructor(turtleElement, heartElement, turtleUri, turtleWalking1Uri, turtleWalking2Uri) {
-        debugger;
         this.element = turtleElement;
         this.heartElement = heartElement;
         this.turtleUri = turtleUri;
@@ -25,23 +24,29 @@ export class Turtle {
             this.onClick = true; 
         };
 
-        // state rest
+        // init states
         this.stateRest = new StateRest(this);
-        this.stateRest.addTransition(this.stateWalking, (data) => { 
-            return this.wait === false; 
-        });
-
-        // state walking
         this.stateWalking = new StateWalking(this);
+
+        // define transitions
+        this.stateRest.addTransition(this.stateWalking, (data) => { 
+            if (data.onClick) {
+                data.onClick = false;
+                return true;
+            }
+            
+            return this.stateRest.wait === false; 
+        });
         this.stateWalking.addTransition(this.stateRest, (data) => {
-            if (data.onClick)
-                return true; // if clicked while walking, transition to rest
-
-            if(!isnumber(data.dx))
-                return false;
-
             // if desination reached, rest then pick new target destnation
-            return Math.abs(data.dx) < 1;
+            return typeof data.dx === 'number' && Math.abs(data.dx) < 1;
+        });
+        this.stateWalking.addTransition(null, (data) => {
+            if (data.onClick) {
+                this.stateWalking.targetX = data.posX; // stop in place
+                data.onClick = false; 
+                return true; 
+            }
         });
 
         // init state machine with turtle data

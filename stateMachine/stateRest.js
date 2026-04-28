@@ -18,8 +18,8 @@ export class StateRest extends State {
     perform(stateMachine) {
         let nextState = this.checkTransitions(this.turtle);
         if (nextState) {
-            stateMachine.setState(nextState);
-            return;
+            debugger;
+            return nextState;
         }
 
         if(this.wait)
