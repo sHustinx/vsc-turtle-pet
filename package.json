@@ -2,7 +2,7 @@
   "name": "vsc-turtle-pet",
   "displayName": "Turtle Pet",
   "description": "A VS Code extension that displays a cute turtle pet in a webview for emotional support",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "icon": "media/icon.png",
   "engines": {
     "vscode": "^1.85.0"
