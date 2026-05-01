@@ -83,6 +83,10 @@ function getWebviewContent(turtleUri, turtleWalking1Uri, turtleWalking2Uri, jsUr
     <div class="playground">
         <img src="${turtleUri}" alt="Turtle" class="turtle" id="turtle">
         <div class="heart" id="heart">❤️</div>
+        <button class="menu-button" id="menu-button">⋮</button>
+        <div class="menu" id="menu" style="display: none;">
+            <button id="party-button">surprise me</button>
+        </div>
     </div>
 
     <script>
