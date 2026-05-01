@@ -35,6 +35,15 @@ class TurtleWebviewView {
         const turtleWalking2Uri = webviewView.webview.asWebviewUri(
             vscode.Uri.joinPath(this.context.extensionUri, 'media', 'mono-walking-2.png')
         );
+        const turtleParty1Uri = webviewView.webview.asWebviewUri(
+            vscode.Uri.joinPath(this.context.extensionUri, 'media', 'mono-party-1.png')
+        );
+        const turtleParty2Uri = webviewView.webview.asWebviewUri(
+            vscode.Uri.joinPath(this.context.extensionUri, 'media', 'mono-party-2.png')
+        );
+        const discoBallUri = webviewView.webview.asWebviewUri(
+            vscode.Uri.joinPath(this.context.extensionUri, 'media', 'disco-ball.png')
+        );
         const jsUri = webviewView.webview.asWebviewUri(
             vscode.Uri.joinPath(this.context.extensionUri, 'webview', 'webview.js')
         );
@@ -47,13 +56,16 @@ class TurtleWebviewView {
             turtleUri.toString(),
             turtleWalking1Uri.toString(),
             turtleWalking2Uri.toString(),
+            turtleParty1Uri.toString(),
+            turtleParty2Uri.toString(),
+            discoBallUri.toString(),
             jsUri.toString(),
             cssUri.toString()
         );
     }
 }
 
-function getWebviewContent(turtleUri, turtleWalking1Uri, turtleWalking2Uri, jsUri, cssUri) {
+function getWebviewContent(turtleUri, turtleWalking1Uri, turtleWalking2Uri, turtleParty1Uri, turtleParty2Uri, discoBallUri, jsUri, cssUri) {
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -93,6 +105,9 @@ function getWebviewContent(turtleUri, turtleWalking1Uri, turtleWalking2Uri, jsUr
         const turtleUri = "${turtleUri}";
         const turtleWalking1Uri = "${turtleWalking1Uri}";
         const turtleWalking2Uri = "${turtleWalking2Uri}";
+        const turtleParty1Uri = "${turtleParty1Uri}";
+        const turtleParty2Uri = "${turtleParty2Uri}";
+        const discoBallUri = "${discoBallUri}";
     </script>
 
     <script type="module" src="${jsUri}"></script>

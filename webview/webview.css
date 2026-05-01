@@ -24,12 +24,56 @@ body.vscode-light {
     overflow: hidden;
 }
 
+#backgroundOverlay.discoOverlay {
+    content: "";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+
+    width: 150vmax;
+    height: 150vmax;
+
+    transform: translate(-50%, -50%) rotate(0deg);
+    transform-origin: center center;
+
+    background: repeating-conic-gradient(
+        red 0deg 10deg,
+        orange 10deg 20deg,
+        yellow 20deg 30deg,
+        lime 30deg 40deg,
+        cyan 40deg 50deg,
+        blue 50deg 60deg,
+        violet 60deg 70deg
+    );
+
+    background-position: center;
+    animation: spinDisco 8s linear infinite;
+    opacity: 0.1;
+    transition: opacity 2s ease;
+
+    filter: blur(20px) saturate(1.5);
+}
+
+#backgroundOverlay.discoOverlay.enter {
+    opacity: 0;
+}
+
+@keyframes spinDisco {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
 .turtle {
     position: absolute;
     width: 80px;
     height: auto;
     cursor: pointer;
     transition: left 0.05s linear;
+    z-index: 10;
 }
 
 .turtle:hover {
@@ -42,11 +86,39 @@ body.vscode-light {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s, transform 0.5s;
+    z-index: 11;
 }
 
 .heart.show {
     opacity: 1;
     transform: translateY(-30px);
+}
+
+.disco-ball {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 40px;
+  height: auto;
+  pointer-events: none;
+
+  opacity: 1;
+  transform: translateX(-50%);
+  transition: top 0.8s ease-in, opacity 0.5s ease-in;
+}
+
+/* entering state (initial) */
+.disco-ball.enter {
+  top: -50%;
+  opacity: 0;
+}
+
+/* exiting state */
+.disco-ball.exit {
+  top: -50%;
+  opacity: 0;
+}
+
 .menu-button {
     position: absolute;
     top: 5px;

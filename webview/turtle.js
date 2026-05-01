@@ -1,14 +1,18 @@
 import {StateMachine} from '../stateMachine/stateMachine.js';
 import {StateWalking} from '../stateMachine/stateWalking.js';
 import {StateRest} from '../stateMachine/stateRest.js';
+import {StateParty} from '../stateMachine/stateParty.js';
 
 export class Turtle {
-    constructor(turtleElement, heartElement, turtleUri, turtleWalking1Uri, turtleWalking2Uri) {
+    constructor(turtleElement, heartElement, turtleUri, turtleWalking1Uri, turtleWalking2Uri, turtleParty1Uri, turtleParty2Uri, discoBallUri) {
         this.element = turtleElement;
         this.heartElement = heartElement;
         this.turtleUri = turtleUri;
         this.turtleWalking1Uri = turtleWalking1Uri;
         this.turtleWalking2Uri = turtleWalking2Uri;
+        this.turtleParty1Uri = turtleParty1Uri;
+        this.turtleParty2Uri = turtleParty2Uri;
+        this.discoBallUri = discoBallUri;
         this.posX = 50; // start in middle
         this.dirX = 1; // start facing right
 
@@ -27,6 +31,7 @@ export class Turtle {
         // init states
         this.stateRest = new StateRest(this);
         this.stateWalking = new StateWalking(this);
+        this.stateParty = new StateParty(this);
 
         // define transitions
         this.stateRest.addTransition(this.stateWalking, (data) => { 
@@ -49,6 +54,12 @@ export class Turtle {
             }
         });
 
+        // transitions for party state
+        this.stateRest.addTransition(this.stateParty, (data) => data.onParty);
+        this.stateWalking.addTransition(this.stateParty, (data) => data.onParty);
+        this.stateParty.addTransition(this.stateRest, () => true);
+        this.stateParty.addTransition(this.stateWalking, () => true);
+
         // init state machine with turtle data
         this.turtleMachine = new StateMachine(this.stateWalking);
         this.turtleMachine.run();
@@ -63,5 +74,10 @@ export class Turtle {
         setTimeout(() => {
             this.heartElement.classList.remove('show');
         }, 500);
+    }
+
+    enterParty() {
+        this.previousState = this.turtleMachine.getState();
+        this.onParty = true;
     }
 }

@@ -34,8 +34,12 @@ export class StateWalking extends State {
             this.walkInterval = null;
         }
         this.turtle.element.src = this.turtle.turtleUri;
-        this.turtle.posX = this.targetX;
-        this.turtle.element.style.left = this.turtle.posX + '%';
+        
+        // Only finalize position if we've reached the target
+        if (typeof this.turtle.dx === 'number' && Math.abs(this.turtle.dx) < 1) {
+            this.turtle.posX = this.targetX;
+            this.turtle.element.style.left = this.turtle.posX + '%';
+        }
     }
 
     perform(stateMachine) {  
