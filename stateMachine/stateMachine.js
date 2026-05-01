@@ -34,11 +34,9 @@ export class StateMachine {
 
     run() {
         if(this.isFresh) {
-            debugger;
             this.currentState?.enter();
             this.isFresh = false;
         } else if (this.nextState && this.nextState !== this.currentState) { 
-            debugger;
             this.currentState?.exit();
             this.nextState.enter();
             this.currentState = this.nextState;
@@ -49,7 +47,6 @@ export class StateMachine {
 
         // self transition
         if(!this.nextState) {
-            debugger;
             this.currentState.exit();
             this.currentState.enter();
         }
