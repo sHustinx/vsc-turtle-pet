@@ -80,6 +80,10 @@ body.vscode-light {
     scale: 1.05;
 }
 
+.turtle-hidden .turtle{
+    display: none;
+}
+
 .heart {
     position: absolute;
     font-size: 20px;
