@@ -8,6 +8,8 @@ export class StateWalking extends State {
         this.turtle = turtle;
         this.walkFrame = 1; // current walking frame (1 or 2)
         this.walkInterval = null; // interval for switching frames
+        this.turtleWalking1Uri = `${turtle.mediaUri}/mono-walking-1.png`;
+        this.turtleWalking2Uri = `${turtle.mediaUri}/mono-walking-2.png`;
     }
 
     enter() {
@@ -20,11 +22,11 @@ export class StateWalking extends State {
             return; // already animating
         
         this.walkFrame = 1;
-        this.turtle.element.src = this.turtle.turtleWalking1Uri;
+        this.turtle.element.src = this.turtleWalking1Uri;
         
         this.walkInterval = setInterval(() => {
             this.walkFrame = this.walkFrame === 1 ? 2 : 1;
-            this.turtle.element.src = this.walkFrame === 1 ? this.turtle.turtleWalking1Uri : this.turtle.turtleWalking2Uri;
+            this.turtle.element.src = this.walkFrame === 1 ? this.turtleWalking1Uri : this.turtleWalking2Uri;
         }, 300); // switch every 300ms
     }
 
@@ -34,7 +36,7 @@ export class StateWalking extends State {
             this.walkInterval = null;
         }
         this.turtle.element.src = this.turtle.turtleUri;
-        
+
         // Only finalize position if we've reached the target
         if (typeof this.turtle.dx === 'number' && Math.abs(this.turtle.dx) < 1) {
             this.turtle.posX = this.targetX;

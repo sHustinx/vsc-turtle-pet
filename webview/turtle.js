@@ -9,11 +9,6 @@ export class Turtle {
         this.heartElement = heartElement;
         this.mediaUri = mediaUri;
         this.turtleUri = `${mediaUri}/mono-standing.png`;
-        this.turtleWalking1Uri = `${mediaUri}/mono-walking-1.png`;
-        this.turtleWalking2Uri = `${mediaUri}/mono-walking-2.png`;
-        this.turtleParty1Uri = `${mediaUri}/mono-party-1.png`;
-        this.turtleParty2Uri = `${mediaUri}/mono-party-2.png`;
-        this.discoBallUri = `${mediaUri}/disco-ball.png`;
         this.posX = 50; // start in middle
         this.dirX = 1; // start facing right
 

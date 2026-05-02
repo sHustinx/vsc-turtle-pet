@@ -9,6 +9,9 @@ export class StateParty extends State {
         this.isPartying = false;
         this.danceFrame = 1; // current walking frame (1 or 2)
         this.danceInterval = null; // interval for switching frames
+        this.turtleParty1Uri = `${turtle.mediaUri}/mono-party-1.png`;
+        this.turtleParty2Uri = `${turtle.mediaUri}/mono-party-2.png`;
+        this.discoBallUri = `${turtle.mediaUri}/disco-ball.png`;
     }
 
     enter() {
@@ -23,12 +26,9 @@ export class StateParty extends State {
         this.turtle.onParty = false;
         this.timerDone = false;
 
-        // Replace turtle image with mono-party.png
-        //this.turtle.element.src = this.turtle.turtlePartyUri;
-
         // Show disco ball dropping from ceiling
         this.discoBall = document.createElement('img');
-        this.discoBall.src = this.turtle.discoBallUri;
+        this.discoBall.src = this.discoBallUri;
         this.discoBall.className = 'disco-ball enter';
         const playground = document.querySelector('.playground');
         playground.appendChild(this.discoBall);
@@ -53,7 +53,7 @@ export class StateParty extends State {
 
         this.danceInterval = setInterval(() => {
             this.danceFrame = this.danceFrame === 1 ? 2 : 1;
-            this.turtle.element.src = this.danceFrame === 1 ? this.turtle.turtleParty1Uri : this.turtle.turtleParty2Uri;
+            this.turtle.element.src = this.danceFrame === 1 ? this.turtleParty1Uri : this.turtleParty2Uri;
         }, 300); // switch every 300ms
 
         // End party after timer

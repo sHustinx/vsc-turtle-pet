@@ -76,7 +76,7 @@ function getWebviewContent(mediaUri, jsUri, cssUri) {
         <div class="heart" id="heart">❤️</div>
         <button class="menu-button" id="menu-button">⋮</button>
         <div class="menu" id="menu" style="display: none;">
-            <button id="party-button">surprise me</button>
+            <button id="party-button">let's party!</button>
         </div>
     </div>
 
