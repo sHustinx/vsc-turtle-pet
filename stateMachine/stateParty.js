@@ -9,9 +9,11 @@ export class StateParty extends State {
         this.isPartying = false;
         this.danceFrame = 1; // current walking frame (1 or 2)
         this.danceInterval = null; // interval for switching frames
+        this.turtleOutfitTransitionUri = `${turtle.mediaUri}/mono-outfit-transition.png`;
         this.turtleParty1Uri = `${turtle.mediaUri}/mono-party-1.png`;
         this.turtleParty2Uri = `${turtle.mediaUri}/mono-party-2.png`;
-        this.discoBallUri = `${turtle.mediaUri}/disco-ball.png`;
+        this.discoBall1Uri = `${turtle.mediaUri}/disco-ball-1.png`;
+        this.discoBall2Uri = `${turtle.mediaUri}/disco-ball-2.png`;
     }
 
     enter() {
@@ -26,9 +28,17 @@ export class StateParty extends State {
         this.turtle.onParty = false;
         this.timerDone = false;
 
+        // sparkle transition
+        const sparkle = document.createElement('img');
+        sparkle.src = this.turtleOutfitTransitionUri;
+        sparkle.className = 'sparkle-flash enter';
+        this.turtle.element.parentElement.appendChild(sparkle);
+        sparkle.style.left = this.turtle.element.style.left;
+        sparkle.style.bottom = this.turtle.element.style.bottom;
+
         // Show disco ball dropping from ceiling
         this.discoBall = document.createElement('img');
-        this.discoBall.src = this.discoBallUri;
+        this.discoBall.src = this.discoBall1Uri;
         this.discoBall.className = 'disco-ball enter';
         const playground = document.querySelector('.playground');
         playground.appendChild(this.discoBall);
@@ -51,10 +61,15 @@ export class StateParty extends State {
             }, 500);
         });
 
-        this.danceInterval = setInterval(() => {
-            this.danceFrame = this.danceFrame === 1 ? 2 : 1;
-            this.turtle.element.src = this.danceFrame === 1 ? this.turtleParty1Uri : this.turtleParty2Uri;
-        }, 300); // switch every 300ms
+        // start dancing and animate disco ball after transition
+        this.playOutfitTransition(() => {
+            this.turtle.element.src = this.turtleParty1Uri;
+            this.danceInterval = setInterval(() => {
+                this.danceFrame = this.danceFrame === 1 ? 2 : 1;
+                this.turtle.element.src = this.danceFrame === 1 ? this.turtleParty1Uri : this.turtleParty2Uri;
+                this.discoBall.src = this.danceFrame === 1 ? this.discoBall1Uri : this.discoBall2Uri;
+            }, 300);
+        });
 
         // End party after timer
         if (this.timer) clearTimeout(this.timer);
@@ -83,6 +98,11 @@ export class StateParty extends State {
             this.danceInterval = null;
         }
 
+        // reset turtle image
+        this.playOutfitTransition(() => {
+            this.turtle.element.src = this.turtle.turtleUri;
+        });
+
         // fade out and remove party props
         if (this.overlay) {
             this.overlay.classList.add('enter'); 
@@ -97,8 +117,26 @@ export class StateParty extends State {
             setTimeout(() => ball.remove(), 800);
             this.discoBall = null;
         }
+    }
 
-        // reset turtle image
-        this.turtle.element.src = this.turtle.turtleUri;
+    // sparkle transition for outfit change
+    playOutfitTransition(onSwap) {
+        const sparkle = document.createElement('img');
+        sparkle.src = this.turtleOutfitTransitionUri;
+        sparkle.className = 'sparkle-flash enter';
+        this.turtle.element.parentElement.appendChild(sparkle);
+        sparkle.style.left = this.turtle.element.style.left;
+        sparkle.style.bottom = this.turtle.element.style.bottom;
+
+        requestAnimationFrame(() => {
+            sparkle.classList.remove('enter'); // fade in
+            setTimeout(() => {
+                onSwap?.(); // swap outfit here
+                sparkle.classList.add('enter'); // fade out
+                setTimeout(() => {
+                    sparkle.remove();
+                }, 300);
+            }, 400);
+        });
     }
 }

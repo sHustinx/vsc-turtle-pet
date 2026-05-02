@@ -22,21 +22,37 @@ body.vscode-light {
     flex: 1;
     position: relative;
     overflow: hidden;
+    min-height: 150px; /* needed? otherwise items semm to get squished when viewport is very narrow? */
 }
 
 #backgroundOverlay.discoOverlay {
-    content: "";
     position: fixed;
-    top: 50%;
+    /* top: -20%; */
     left: 50%;
-
     width: 150vmax;
     height: 150vmax;
+    transform: translateX(-50%);
 
-    transform: translate(-50%, -50%) rotate(0deg);
-    transform-origin: center center;
+    animation: spinDisco 8s linear infinite;
+    opacity: 0.1;
+    transition: opacity 2s ease;
+    filter: blur(20px) saturate(1.5);
+}
 
+@property --angle {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
+}
+
+@keyframes spinDisco {
+    from { --angle: 0deg; }
+    to   { --angle: 360deg; }
+}
+
+#backgroundOverlay.discoOverlay {
     background: repeating-conic-gradient(
+        from var(--angle) at 50% 65px, /* start at center of disco ball */
         red 0deg 10deg,
         orange 10deg 20deg,
         yellow 20deg 30deg,
@@ -45,26 +61,10 @@ body.vscode-light {
         blue 50deg 60deg,
         violet 60deg 70deg
     );
-
-    background-position: center;
-    animation: spinDisco 8s linear infinite;
-    opacity: 0.1;
-    transition: opacity 2s ease;
-
-    filter: blur(20px) saturate(1.5);
 }
 
 #backgroundOverlay.discoOverlay.enter {
     opacity: 0;
-}
-
-@keyframes spinDisco {
-    from {
-        transform: translate(-50%, -50%) rotate(0deg);
-    }
-    to {
-        transform: translate(-50%, -50%) rotate(360deg);
-    }
 }
 
 .turtle {
@@ -84,6 +84,22 @@ body.vscode-light {
     display: none;
 }
 
+.sparkle-flash {
+    position: absolute;
+    width: 80px;
+    height: auto;
+    pointer-events: none;
+    opacity: 1;
+    transform:scale(1);
+    transition: opacity 0.3s ease-in-out, transform 0.2s ease-out;
+    z-index: 20;
+}
+
+.sparkle-flash.enter {
+    opacity: 0;
+    transform: scale(0.8);
+}
+
 .heart {
     position: absolute;
     font-size: 20px;
@@ -100,7 +116,7 @@ body.vscode-light {
 
 .disco-ball {
   position: absolute;
-  top: 0;
+  top: -20px;
   left: 50%;
   width: 40px;
   height: auto;
