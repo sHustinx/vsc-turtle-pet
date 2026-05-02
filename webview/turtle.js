@@ -4,15 +4,16 @@ import {StateRest} from '../stateMachine/stateRest.js';
 import {StateParty} from '../stateMachine/stateParty.js';
 
 export class Turtle {
-    constructor(turtleElement, heartElement, turtleUri, turtleWalking1Uri, turtleWalking2Uri, turtleParty1Uri, turtleParty2Uri, discoBallUri) {
+    constructor(turtleElement, heartElement, mediaUri) {
         this.element = turtleElement;
         this.heartElement = heartElement;
-        this.turtleUri = turtleUri;
-        this.turtleWalking1Uri = turtleWalking1Uri;
-        this.turtleWalking2Uri = turtleWalking2Uri;
-        this.turtleParty1Uri = turtleParty1Uri;
-        this.turtleParty2Uri = turtleParty2Uri;
-        this.discoBallUri = discoBallUri;
+        this.mediaUri = mediaUri;
+        this.turtleUri = `${mediaUri}/mono-standing.png`;
+        this.turtleWalking1Uri = `${mediaUri}/mono-walking-1.png`;
+        this.turtleWalking2Uri = `${mediaUri}/mono-walking-2.png`;
+        this.turtleParty1Uri = `${mediaUri}/mono-party-1.png`;
+        this.turtleParty2Uri = `${mediaUri}/mono-party-2.png`;
+        this.discoBallUri = `${mediaUri}/disco-ball.png`;
         this.posX = 50; // start in middle
         this.dirX = 1; // start facing right
 

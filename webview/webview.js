@@ -7,7 +7,7 @@ const menu = document.getElementById('menu');
 const partyButton = document.getElementById('party-button');
 
 // init turtle
-const turtleData = new Turtle(turtle, heart, turtleUri, turtleWalking1Uri, turtleWalking2Uri, turtleParty1Uri, turtleParty2Uri, discoBallUri);
+const turtleData = new Turtle(turtle, heart, mediaUri);
 
 // menu functionality
 menuButton.addEventListener('click', () => {

@@ -25,47 +25,26 @@ class TurtleWebviewView {
             localResourceRoots: [this.context.extensionUri]
         };
 
-        // get turtle images
-        const turtleUri = webviewView.webview.asWebviewUri(
-            vscode.Uri.joinPath(this.context.extensionUri, 'media', 'mono-standing.png')
-        );
-        const turtleWalking1Uri = webviewView.webview.asWebviewUri(
-            vscode.Uri.joinPath(this.context.extensionUri, 'media', 'mono-walking-1.png')
-        );
-        const turtleWalking2Uri = webviewView.webview.asWebviewUri(
-            vscode.Uri.joinPath(this.context.extensionUri, 'media', 'mono-walking-2.png')
-        );
-        const turtleParty1Uri = webviewView.webview.asWebviewUri(
-            vscode.Uri.joinPath(this.context.extensionUri, 'media', 'mono-party-1.png')
-        );
-        const turtleParty2Uri = webviewView.webview.asWebviewUri(
-            vscode.Uri.joinPath(this.context.extensionUri, 'media', 'mono-party-2.png')
-        );
-        const discoBallUri = webviewView.webview.asWebviewUri(
-            vscode.Uri.joinPath(this.context.extensionUri, 'media', 'disco-ball.png')
-        );
         const jsUri = webviewView.webview.asWebviewUri(
             vscode.Uri.joinPath(this.context.extensionUri, 'webview', 'webview.js')
         );
         const cssUri = webviewView.webview.asWebviewUri(
             vscode.Uri.joinPath(this.context.extensionUri, 'webview', 'webview.css')
         );
+        const mediaUri = webviewView.webview.asWebviewUri(
+            vscode.Uri.joinPath(this.context.extensionUri, 'media')
+        );
 
         // set the webview HTML content
         webviewView.webview.html = getWebviewContent(
-            turtleUri.toString(),
-            turtleWalking1Uri.toString(),
-            turtleWalking2Uri.toString(),
-            turtleParty1Uri.toString(),
-            turtleParty2Uri.toString(),
-            discoBallUri.toString(),
+            mediaUri.toString(),
             jsUri.toString(),
             cssUri.toString()
         );
     }
 }
 
-function getWebviewContent(turtleUri, turtleWalking1Uri, turtleWalking2Uri, turtleParty1Uri, turtleParty2Uri, discoBallUri, jsUri, cssUri) {
+function getWebviewContent(mediaUri, jsUri, cssUri) {
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -93,7 +72,7 @@ function getWebviewContent(turtleUri, turtleWalking1Uri, turtleWalking2Uri, turt
 </head>
 <body class="turtle-hidden">
     <div class="playground">
-        <img src="${turtleUri}" alt="Turtle" class="turtle" id="turtle">
+        <img src="${mediaUri}/mono-standing.png" alt="Turtle" class="turtle" id="turtle">
         <div class="heart" id="heart">❤️</div>
         <button class="menu-button" id="menu-button">⋮</button>
         <div class="menu" id="menu" style="display: none;">
@@ -102,12 +81,7 @@ function getWebviewContent(turtleUri, turtleWalking1Uri, turtleWalking2Uri, turt
     </div>
 
     <script>
-        const turtleUri = "${turtleUri}";
-        const turtleWalking1Uri = "${turtleWalking1Uri}";
-        const turtleWalking2Uri = "${turtleWalking2Uri}";
-        const turtleParty1Uri = "${turtleParty1Uri}";
-        const turtleParty2Uri = "${turtleParty2Uri}";
-        const discoBallUri = "${discoBallUri}";
+        const mediaUri = "${mediaUri}";
     </script>
 
     <script type="module" src="${jsUri}"></script>
