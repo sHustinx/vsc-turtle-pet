@@ -1,3 +1,4 @@
+import { Events } from '../events/events.js';
 import {StateMachine} from '../stateMachine/stateMachine.js';
 import {StateWalking} from '../stateMachine/stateWalking.js';
 import {StateRest} from '../stateMachine/stateRest.js';
@@ -21,7 +22,7 @@ export class Turtle {
         // onclick on turtle: show heart and wake up to walk somewhere new
         this.element.onclick = () => {
             this.showHeart();
-            this.onClick = true; 
+            Events.trigger('onClick', { target: this });
         };
 
         // init states
@@ -29,32 +30,24 @@ export class Turtle {
         this.stateWalking = new StateWalking(this);
         this.stateParty = new StateParty(this);
 
-        // define transitions
+        // start walking after resting for a bit.
         this.stateRest.addTransition(this.stateWalking, (data) => { 
-            if (data.onClick) {
-                data.onClick = false;
-                return true;
-            }
-            
             return this.stateRest.wait === false; 
         });
+        // also start walking if turtle is clicked while resting
+        this.stateRest.addEventTransition('onClick', this.stateWalking);
+
+        // when reaching destination, rest for a bit.
         this.stateWalking.addTransition(this.stateRest, (data) => {
-            // if desination reached, rest then pick new target destnation
             return typeof data.dx === 'number' && Math.abs(data.dx) < 1;
         });
-        this.stateWalking.addTransition(null, (data) => {
-            if (data.onClick) {
-                this.stateWalking.targetX = data.posX; // stop in place
-                data.onClick = false; 
-                return true; 
-            }
-        });
+        // get new target if turtle is clicked while walking.
+        this.stateWalking.addEventTransition('onClick', this.stateWalking);
 
         // transitions for party state
-        this.stateRest.addTransition(this.stateParty, (data) => data.onParty);
-        this.stateWalking.addTransition(this.stateParty, (data) => data.onParty);
-        this.stateParty.addTransition(this.stateRest, () => true);
-        this.stateParty.addTransition(this.stateWalking, () => true);
+        this.stateRest.addEventTransition('onParty', this.stateParty);
+        this.stateWalking.addEventTransition('onParty', this.stateParty);
+        this.stateParty.addTransition(this.stateWalking, (data) => this.stateParty.timerDone);
 
         // init state machine with turtle data
         this.turtleMachine = new StateMachine(this.stateWalking);
@@ -74,6 +67,6 @@ export class Turtle {
 
     enterParty() {
         this.previousState = this.turtleMachine.getState();
-        this.onParty = true;
+        Events.trigger('onParty', { target: this });
     }
 }
