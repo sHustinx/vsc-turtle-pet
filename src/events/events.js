@@ -2,6 +2,11 @@ export class Events {
     static events = [];
     static callbacks = [];
 
+    /**
+     * Subscribe to an event and register a callback function.
+     * @param {string} event The name of the event to subscribe to. Check for typos!
+     * @param {function(data)} callback The callback that the event should trigger.
+     */
     static subscribe(event, callback) {
         if (typeof callback !== 'function' || callback.length < 1) {
             throw new TypeError('Callback must be a function that accepts at least one argument');
@@ -19,6 +24,11 @@ export class Events {
         }
     }
 
+    /**
+     * Unsubscribe a callback from an event.
+     * @param {string} event The name of the event to unsubscribe from. Check for typos!
+     * @param {function(data)} callback The callback that you want to unsubscribe.
+     */
     static unsubscribe(event, callback) {
         let index = Events.events.indexOf(event);
         debugger;
@@ -35,6 +45,11 @@ export class Events {
         }
     }
 
+    /**
+     * Trigger an event and call all registered callbacks.
+     * @param {string} event The name of the event to trigger. Check for typos!
+     * @param {*} data The data you wish to pass to the callbacks.
+     */
     static trigger(event, data) {
         let index = Events.events.indexOf(event);
         if (index !== -1) {
