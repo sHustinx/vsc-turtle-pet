@@ -79,11 +79,9 @@ export class StateParty extends State {
     }
 
     perform(stateMachine) {
-
-        // End party after timer expires
-        if (this.timerDone) {
-            this.timerDone = false;
-            return this.turtle.previousState || this.turtle.stateRest;
+        let nextState = this.checkTransitions(this.turtle);
+        if (nextState) {
+            return nextState;
         }
 
         return null;

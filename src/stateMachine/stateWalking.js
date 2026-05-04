@@ -8,8 +8,7 @@ export class StateWalking extends State {
         this.turtle = turtle;
         this.walkFrame = 1; // current walking frame (1 or 2)
         this.walkInterval = null; // interval for switching frames
-        this.turtleWalking1Uri = `${turtle.mediaUri}/mono-walking-1.png`;
-        this.turtleWalking2Uri = `${turtle.mediaUri}/mono-walking-2.png`;
+        this.turtleWalkingUri = `${turtle.mediaUri}/turtle-walking.gif`;
     }
 
     enter() {
@@ -22,12 +21,7 @@ export class StateWalking extends State {
             return; // already animating
         
         this.walkFrame = 1;
-        this.turtle.element.src = this.turtleWalking1Uri;
-        
-        this.walkInterval = setInterval(() => {
-            this.walkFrame = this.walkFrame === 1 ? 2 : 1;
-            this.turtle.element.src = this.walkFrame === 1 ? this.turtleWalking1Uri : this.turtleWalking2Uri;
-        }, 300); // switch every 300ms
+        this.turtle.element.src = this.turtleWalkingUri;
     }
 
     exit() {
