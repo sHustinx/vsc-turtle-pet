@@ -26,10 +26,10 @@ class TurtleWebviewView {
         };
 
         const jsUri = webviewView.webview.asWebviewUri(
-            vscode.Uri.joinPath(this.context.extensionUri, 'webview', 'webview.js')
+            vscode.Uri.joinPath(this.context.extensionUri, 'src', 'webview', 'webview.js')
         );
         const cssUri = webviewView.webview.asWebviewUri(
-            vscode.Uri.joinPath(this.context.extensionUri, 'webview', 'webview.css')
+            vscode.Uri.joinPath(this.context.extensionUri, 'src', 'webview', 'webview.css')
         );
         const mediaUri = webviewView.webview.asWebviewUri(
             vscode.Uri.joinPath(this.context.extensionUri, 'media')

@@ -21,9 +21,6 @@ export class StateRest extends State {
             return nextState;
         }
 
-        if(this.wait)
-            return this; 
-
         return null;
     }
 

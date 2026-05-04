@@ -50,15 +50,14 @@ export class StateWalking extends State {
         
         let nextState = this.checkTransitions(this.turtle);
         if (nextState) {
-            stateMachine.setState(nextState);
-            return;
+            return nextState;
         }
         
         // move towards target
         this.turtle.posX += Math.sign(this.turtle.dx) * speed;
         this.turtle.element.style.left = this.turtle.posX + '%';
 
-        return this;
+        return null;
     }
 
     // get random target X position, accounting for turtle png width (80px)

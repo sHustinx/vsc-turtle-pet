@@ -83,11 +83,10 @@ export class StateParty extends State {
         // End party after timer expires
         if (this.timerDone) {
             this.timerDone = false;
-            stateMachine.setState(this.turtle.previousState || this.turtle.stateRest);
-            return null;
+            return this.turtle.previousState || this.turtle.stateRest;
         }
 
-        return this;
+        return null;
     }
 
     exit() {

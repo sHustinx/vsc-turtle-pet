@@ -15,6 +15,14 @@ export class StateMachine {
         return true;
     }
 
+    /**
+     * Set the next state of the machine. If bForce is true, the transition will happen immediately on the next run, bypassing any checks. Otherwise, the transition will only happen if it's a valid transition from the current state.
+     * Use with caution, as forcing transitions can lead to unexpected behavior and makes debugging more difficult.
+     * 
+     * @param {*} state 
+     * @param {*} bForce 
+     * @returns 
+     */
     setState(state, bForce = false) {
         if(state === this.currentState) 
             return false; // No change needed
@@ -34,22 +42,16 @@ export class StateMachine {
 
     run() {
         if(this.isFresh) {
-            this.currentState?.enter();
+            this.currentState?.enterInternal();
             this.isFresh = false;
-        } else if (this.nextState && this.nextState !== this.currentState) { 
-            this.currentState?.exit();
-            this.nextState.enter();
+        } else if (this.nextState) { 
+            this.currentState?.exitInternal();
+            this.nextState.enterInternal();
             this.currentState = this.nextState;
             this.nextState = null;
         }
 
         this.nextState = this.step();
-
-        // self transition
-        if(!this.nextState) {
-            this.currentState.exit();
-            this.currentState.enter();
-        }
         
         requestAnimationFrame(() => this.run());
     }
