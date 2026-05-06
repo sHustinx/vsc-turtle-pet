@@ -1,4 +1,4 @@
-import { State } from "./state.js";
+import { State } from "../state.js";
 
 export class StateParty extends State {
     constructor(turtle) {
@@ -63,10 +63,10 @@ export class StateParty extends State {
 
         // start dancing and animate disco ball after transition
         this.playOutfitTransition(() => {
-            this.turtle.element.src = this.turtleParty1Uri;
+            this.turtle.animation.src = this.turtleParty1Uri;
             this.danceInterval = setInterval(() => {
                 this.danceFrame = this.danceFrame === 1 ? 2 : 1;
-                this.turtle.element.src = this.danceFrame === 1 ? this.turtleParty1Uri : this.turtleParty2Uri;
+                this.turtle.animation.src = this.danceFrame === 1 ? this.turtleParty1Uri : this.turtleParty2Uri;
                 this.discoBall.src = this.danceFrame === 1 ? this.discoBall1Uri : this.discoBall2Uri;
             }, 300);
         });
@@ -97,7 +97,7 @@ export class StateParty extends State {
 
         // reset turtle image
         this.playOutfitTransition(() => {
-            this.turtle.element.src = this.turtle.turtleUri;
+            this.turtle.animation.src = this.turtle.turtleUri;
         });
 
         // fade out and remove party props

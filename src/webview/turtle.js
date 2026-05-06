@@ -1,8 +1,8 @@
 import { Events } from '../events/events.js';
 import {StateMachine} from '../stateMachine/stateMachine.js';
-import {StateWalking} from '../stateMachine/stateWalking.js';
-import {StateRest} from '../stateMachine/stateRest.js';
-import {StateParty} from '../stateMachine/stateParty.js';
+import {StateWalking} from '../stateMachine/turtleMachine/stateWalking.js';
+import {StateRest} from '../stateMachine/turtleMachine/stateRest.js';
+import {StateParty} from '../stateMachine/turtleMachine/stateParty.js';
 
 export class Turtle {
     constructor(turtleElement, heartElement, mediaUri) {
