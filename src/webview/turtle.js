@@ -5,8 +5,9 @@ import {StateRest} from '../stateMachine/turtleMachine/stateRest.js';
 import {StateParty} from '../stateMachine/turtleMachine/stateParty.js';
 
 export class Turtle {
-    constructor(turtleElement, heartElement, mediaUri) {
-        this.element = turtleElement;
+    constructor(turtle, turtleAnimation, heartElement, mediaUri) {
+        this.element = turtle;
+        this.animation = turtleAnimation;
         this.heartElement = heartElement;
         this.mediaUri = mediaUri;
         this.turtleUri = `${mediaUri}/mono-standing.png`;
@@ -19,12 +20,16 @@ export class Turtle {
         this.element.style.top = 'auto';
         this.element.style.transform = 'scaleX(-1)';
 
-        // onclick on turtle: show heart and wake up to walk somewhere new
+        // onPet on turtle: show heart and wake up to walk somewhere new
         this.element.onclick = () => {
             this.showHeart();
-            Events.trigger('onClick', { target: this });
+            Events.trigger('onPet', { target: this });
         };
 
+        this.initTurtleMachine();
+    }
+
+    initTurtleMachine() {
         // init states
         this.stateRest = new StateRest(this);
         this.stateWalking = new StateWalking(this);
@@ -35,14 +40,14 @@ export class Turtle {
             return this.stateRest.wait === false; 
         });
         // also start walking if turtle is clicked while resting
-        this.stateRest.addEventTransition('onClick', this.stateWalking);
+        this.stateRest.addEventTransition('onPet', this.stateWalking);
 
         // when reaching destination, rest for a bit.
         this.stateWalking.addTransition(this.stateRest, (data) => {
             return typeof data.dx === 'number' && Math.abs(data.dx) < 1;
         });
         // get new target if turtle is clicked while walking.
-        this.stateWalking.addEventTransition('onClick', this.stateWalking);
+        this.stateWalking.addEventTransition('onPet', this.stateWalking);
 
         // transitions for party state
         this.stateRest.addEventTransition('onParty', this.stateParty);
@@ -56,8 +61,12 @@ export class Turtle {
 
     // show heart above turtle, then hide again 
     showHeart() {
-        this.heartElement.style.left = this.element.style.left;
-        this.heartElement.style.bottom = '30%';
+        const turtleRect = this.element.getBoundingClientRect();
+        const heartOffsetY = turtleRect.height * 0.7; // offset heart relative to turtle height
+        const heartOffsetX = turtleRect.width * -0.35; // offset heart relative to turtle width, based on look direction
+
+        this.heartElement.style.left = `calc(50% + ${heartOffsetX}px)`;
+        this.heartElement.style.top = `-${heartOffsetY}px`;
         this.heartElement.classList.add('show');
         
         setTimeout(() => {

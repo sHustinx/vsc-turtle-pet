@@ -76,6 +76,12 @@ body.vscode-light {
     z-index: 10;
 }
 
+.turtle img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
 .turtle:hover {
     scale: 1.05;
 }
@@ -102,16 +108,18 @@ body.vscode-light {
 
 .heart {
     position: absolute;
+    left: 50%;
     font-size: 20px;
     opacity: 0;
     pointer-events: none;
+    transform: translateX(-50%);
     transition: opacity 0.3s, transform 0.5s;
     z-index: 11;
 }
 
 .heart.show {
     opacity: 1;
-    transform: translateY(-30px);
+    transform: translateX(-50%) translateY(-30px);
 }
 
 .disco-ball {
