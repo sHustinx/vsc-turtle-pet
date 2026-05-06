@@ -76,6 +76,7 @@ function getWebviewContent(mediaUri, jsUri, cssUri) {
             <img src="${mediaUri}/mono-standing.png" alt="Turtle" id="turtleAnimation">
             <div class="heart" id="heart">❤️</div>
         </div>
+        <div class="heart" id="cabbage">🥬</div>
         <button class="menu-button" id="menu-button">⋮</button>
         <div class="menu" id="menu" style="display: none;">
             <button id="party-button">let's party!</button>

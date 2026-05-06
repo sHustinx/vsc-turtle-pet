@@ -21,12 +21,18 @@ export class Turtle {
         this.element.style.transform = 'scaleX(-1)';
 
         // onPet on turtle: show heart and wake up to walk somewhere new
-        this.element.onclick = () => {
+        this.element.onclick = (mouseEvent) => {
+            if (!this.isClicked(mouseEvent)) return;
+
             this.showHeart();
             Events.trigger('onPet', { target: this });
         };
 
         this.initTurtleMachine();
+    }
+
+    isClicked(mouseEvent) {
+        return this.element.contains(mouseEvent.target);
     }
 
     initTurtleMachine() {

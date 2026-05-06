@@ -1,21 +1,26 @@
-import { Turtle } from './turtle.js';
+import { Spawner } from '../actors/spawner.js';
+import { Turtle } from '../actors/turtle.js';
 
-const turtle = document.getElementById('turtle');
-const turtleAnimation = document.getElementById('turtleAnimation');
-const heart = document.getElementById('heart');
-const menuButton = document.getElementById('menu-button');
-const menu = document.getElementById('menu');
-const partyButton = document.getElementById('party-button');
+const playGroundElement = document.querySelector('.playground');
+const turtleElement = document.getElementById('turtle');
+const turtleAnimationElement = document.getElementById('turtleAnimation');
+const heartElement = document.getElementById('heart');
+const menuButtonElement = document.getElementById('menu-button');
+const menuElement = document.getElementById('menu');
+const partyButtonElement = document.getElementById('party-button');
+
+// init spawner
+const spawner = new Spawner(playGroundElement);
 
 // init turtle
-const turtleData = new Turtle(turtle, turtleAnimation, heart, mediaUri);
+const turtle = new Turtle(turtleElement, turtleAnimationElement, heartElement, mediaUri);
 
 // menu functionality
-menuButton.addEventListener('click', () => {
-    menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+menuButtonElement.addEventListener('click', () => {
+    menuElement.style.display = menuElement.style.display === 'none' ? 'block' : 'none';
 });
 
-partyButton.addEventListener('click', () => {
-    turtleData.enterParty();
-    menu.style.display = 'none';
+partyButtonElement.addEventListener('click', () => {
+    turtle.enterParty();
+    menuElement.style.display = 'none';
 });
