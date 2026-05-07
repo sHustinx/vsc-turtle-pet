@@ -3,6 +3,8 @@ import {StateMachine} from '../stateMachine/stateMachine.js';
 import {StateWalking} from '../stateMachine/turtleMachine/stateWalking.js';
 import {StateRest} from '../stateMachine/turtleMachine/stateRest.js';
 import {StateParty} from '../stateMachine/turtleMachine/stateParty.js';
+import { StateDoNotDisturb } from '../stateMachine/turtleMachine/stateDoNotDisturb.js';
+
 
 export class Turtle {
     constructor(turtle, turtleAnimation, heartElement, mediaUri) {
@@ -40,6 +42,7 @@ export class Turtle {
         this.stateRest = new StateRest(this);
         this.stateWalking = new StateWalking(this);
         this.stateParty = new StateParty(this);
+        this.stateDoNotDisturb = new StateDoNotDisturb(this);
 
         // start walking after resting for a bit.
         this.stateRest.addTransition(this.stateWalking, (data) => { 
@@ -55,6 +58,11 @@ export class Turtle {
         // get new target if turtle is clicked while walking.
         this.stateWalking.addEventTransition('onPet', this.stateWalking);
 
+        // transitions for do not disturb state
+        this.stateRest.addTransition(this.stateDoNotDisturb, () => this.doNotDisturb === true);
+        this.stateWalking.addTransition(this.stateDoNotDisturb, () => this.doNotDisturb === true);
+        this.stateDoNotDisturb.addTransition(this.stateRest, () => this.stateDoNotDisturb.timerDone);
+
         // transitions for party state
         this.stateRest.addTransition(this.stateParty, () => this.onParty === true);
         this.stateWalking.addTransition(this.stateParty, () => this.onParty === true);
@@ -67,17 +75,36 @@ export class Turtle {
 
     // show heart above turtle, then hide again 
     showHeart() {
-        const turtleRect = this.element.getBoundingClientRect();
-        const heartOffsetY = turtleRect.height * 0.7; // offset heart relative to turtle height
-        const heartOffsetX = turtleRect.width * -0.35; // offset heart relative to turtle width, based on look direction
+        // if pet too much, hide for a bit
+        if (!this.doNotDisturb) {
+            
+            // check for spamming 
+            // (but allow during parties)
+            if (this.turtleMachine.getState() !== this.stateParty){
+                const now = Date.now();
+                this.petTimestamps = (this.petTimestamps ?? []).filter(t => now - t < 5000);
+                this.petTimestamps.push(now);
+                if (this.petTimestamps.length > 8) {
+                    this.doNotDisturb = true;
+                    this.onParty = false;
+                    this.petTimestamps = [];
+                    return; // don't show heart
+                }
+            }
 
-        this.heartElement.style.left = `calc(50% + ${heartOffsetX}px)`;
-        this.heartElement.style.top = `-${heartOffsetY}px`;
-        this.heartElement.classList.add('show');
-        
-        setTimeout(() => {
-            this.heartElement.classList.remove('show');
-        }, 500);
+            // position heart above turtle
+            const turtleRect = this.element.getBoundingClientRect();
+            const heartOffsetY = turtleRect.height * 0.7; // offset heart relative to turtle height
+            const heartOffsetX = turtleRect.width * -0.35; // offset heart relative to turtle width, based on look direction
+
+            this.heartElement.style.left = `calc(50% + ${heartOffsetX}px)`;
+            this.heartElement.style.top = `-${heartOffsetY}px`;
+            this.heartElement.classList.add('show');
+            
+            setTimeout(() => {
+                this.heartElement.classList.remove('show');
+            }, 500);
+        }
     }
 
     enterParty() {
