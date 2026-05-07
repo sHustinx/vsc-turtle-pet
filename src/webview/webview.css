@@ -74,6 +74,7 @@ body.vscode-light {
     cursor: pointer;
     transition: left 0.05s linear;
     z-index: 10;
+    user-select: none;
 }
 
 .turtle img {
@@ -115,6 +116,7 @@ body.vscode-light {
     transform: translateX(-50%);
     transition: opacity 0.3s, transform 0.5s;
     z-index: 11;
+    user-select: none;
 }
 
 .heart.show {
