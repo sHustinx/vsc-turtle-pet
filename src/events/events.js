@@ -31,7 +31,6 @@ export class Events {
      */
     static unsubscribe(event, callback) {
         let index = Events.events.indexOf(event);
-        debugger;
         if (index !== -1) {
             let callbackIndex = Events.callbacks[index].indexOf(callback);
             if (callbackIndex !== -1) {
