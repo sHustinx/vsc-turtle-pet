@@ -12,11 +12,15 @@ export class State {
      * INTERNAL do not override or call directly. Use enter() instead.
      */
     enterInternal() {
+        // store references instead of anonymous functions to be able to unsubscribe later
+        this.eventHandlers = new Map();
         this.eventTransitions.forEach(([event, state]) => {
-            Events.subscribe(event, (data) => {
-                this.debugger = true; // trigger debugger on event transition for easier debugging
+            const handler = (data) => {
+                // console.log(`[${this.constructor.name}] event "${event}" fired, triggers before push:`, this.eventTriggers.length);
                 this.eventTriggers.push(event);
-            });
+            };
+            this.eventHandlers.set(event, handler);
+            Events.subscribe(event, handler);
         });
 
         this.enter();
@@ -35,10 +39,10 @@ export class State {
      */
     exitInternal() {
         this.eventTransitions.forEach(([event, state]) => {
-            Events.unsubscribe(event, (data) => {
-                this.eventTriggers.push(event);
-            });
-        }); 
+            const handler = this.eventHandlers?.get(event);
+            if (handler) Events.unsubscribe(event, handler);
+        });
+        this.eventHandlers = null;
 
         this.exit();
     }
