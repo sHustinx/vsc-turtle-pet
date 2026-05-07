@@ -6,7 +6,6 @@ export class StateParty extends State {
         this.turtle = turtle;
         this.timer = null;
         this.timerDone = false;
-        this.isPartying = false;
         this.danceFrame = 1; // current walking frame (1 or 2)
         this.danceInterval = null; // interval for switching frames
         this.turtleOutfitTransitionUri = `${turtle.mediaUri}/mono-outfit-transition.png`;
@@ -17,13 +16,6 @@ export class StateParty extends State {
     }
 
     enter() {
-        // Only initialize once
-        if (this.isPartying) {
-            return;
-        }
-        
-        this.isPartying = true;
-
         // Reset party flag
         this.turtle.onParty = false;
         this.timerDone = false;
@@ -88,7 +80,6 @@ export class StateParty extends State {
     }
 
     exit() {
-        this.isPartying = false;
         if (this.timer) { clearTimeout(this.timer); this.timer = null; }
         if (this.danceInterval) {
             clearInterval(this.danceInterval);

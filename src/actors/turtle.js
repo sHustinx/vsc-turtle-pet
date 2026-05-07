@@ -56,8 +56,8 @@ export class Turtle {
         this.stateWalking.addEventTransition('onPet', this.stateWalking);
 
         // transitions for party state
-        this.stateRest.addEventTransition('onParty', this.stateParty);
-        this.stateWalking.addEventTransition('onParty', this.stateParty);
+        this.stateRest.addTransition(this.stateParty, () => this.onParty === true);
+        this.stateWalking.addTransition(this.stateParty, () => this.onParty === true);
         this.stateParty.addTransition(this.stateWalking, (data) => this.stateParty.timerDone);
 
         // init state machine with turtle data
@@ -81,7 +81,7 @@ export class Turtle {
     }
 
     enterParty() {
-        this.previousState = this.turtleMachine.getState();
-        Events.trigger('onParty', { target: this });
+        if (this.turtleMachine.getState() === this.stateParty) return; // already partying
+        this.onParty = true; 
     }
 }
