@@ -1,1 +1,4 @@
 affinity/*
+.vscode/*
+.git/*
+.gitignore
