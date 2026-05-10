@@ -16,8 +16,11 @@ export class Turtle {
         this.turtleUri = `${mediaUri}/mono-standing.png`;
         this.posX = PlayGround.element.offsetWidth / 2;
         this.dirX = 1; // start facing right
-        this.size = 1;
         this.baseWidth = 80;
+        this.minSize = 0.8;
+        this.maxSize = 2;
+        this.baseSpeed = 0.05;
+        this.setSize(1);
 
         // set initial position and image
         this.element.style.left = this.posX + 'px';
@@ -43,6 +46,7 @@ export class Turtle {
         });
 
         this.initTurtleMachine();
+        this.initGrowth();
     }
 
     isClicked(mouseEvent) {
@@ -89,6 +93,28 @@ export class Turtle {
         this.turtleMachine.run();
     }
 
+    /**
+     * Initializes the growth cycle.
+     */
+    initGrowth() {
+        this.foodValue = 0.5; // How much fat each piece food grants if Mono is size 1.
+        this.timeToDigest = 30; // The amount of seconds required, to consume 1 fat.
+        this.growthRate = 0.1; // The size increase possible with 1 fat.
+        this.fat = 1; // The amount of fat stored at the start of the game.
+        this.maxDiet = -1; // The lowest amount of fat possible. Negative fat causes the turtle to shrink.
+        this.growthIntervalDuration = 0.1;
+        this.totalGrow = 0;
+
+        this.growthInterval = setInterval(() => {
+            let fatAvailable = 1 / this.timeToDigest;
+            let fatConsumed = fatAvailable * this.growthIntervalDuration;
+            this.fat = Math.max(this.fat - fatConsumed, this.maxDiet); // Consume fat.
+
+            let growth = fatConsumed * this.growthRate; // Calculate growth value
+            this.setSize(this.size + Math.sign(this.fat) * growth); 
+        }, this.growthIntervalDuration * 1000); // Smaller timesteps for smoother transition
+    }
+
     // show heart above turtle, then hide again 
     showHeart() {
         // if pet too much, hide for a bit
@@ -108,17 +134,19 @@ export class Turtle {
                 }
             }
 
-            // position heart above turtle
-            const turtleRect = this.element.getBoundingClientRect();
-            const heartOffsetY = turtleRect.height * 0.7; // offset heart relative to turtle height
-            const heartOffsetX = turtleRect.width * -0.35; // offset heart relative to turtle width, based on look direction
-
-            this.heartElement.style.left = `calc(50% + ${heartOffsetX}px)`;
-            this.heartElement.style.top = `-${heartOffsetY}px`;
-            this.heartElement.classList.add('show');
+            this.heartFollowInterval = setInterval(() => {
+                // position heart above turtle
+                let offsetX = this.element.offsetWidth * (this.dirX < 0 ? 1.1 : -0.1);
+                this.heartElement.style.left =  this.posX + offsetX + 'px';
+                let offsetY = this.element.offsetHeight * 0.95;
+                this.heartElement.style.top = this.element.offsetTop - offsetY + 'px';
+                this.heartElement.classList.add('show');
+            }, 30);
             
             setTimeout(() => {
                 this.heartElement.classList.remove('show');
+                clearInterval(this.heartFollowInterval);
+                this.heartFollowInterval = null;
             }, 500);
         }
     }
@@ -132,11 +160,10 @@ export class Turtle {
         if(!this.dinner) 
             return false;
         
-        debugger;
         let dinnerWidth = this.dinner.element.offsetWidth;
         let inRange = this.isTouching(this.dinner.posX, dinnerWidth * 0.7, -dinnerWidth * 0.4);
         if(inRange) {
-            // TODO actually eat it :)
+            this.fat += (this.foodValue ?? 1) / this.size;
         }
 
         // cleanup
@@ -150,6 +177,18 @@ export class Turtle {
 
     getWidth() {
         return this.baseWidth * this.size;
+    }
+
+    setDirection(value) {
+        this.dirX = value;
+        this.setSize(this.size);
+    }
+
+    setSize(value) {
+        value = Math.max(Math.min(value, this.maxSize), this.minSize);
+        this.size = value;
+        this.speed = this.baseSpeed * this.size;
+        this.element.style.transform = 'scale(' + (this.size * Math.sign(this.dirX)) + ',' + this.size + ')';
     }
 
     isTouching(posX, marginLeft = 0, marginRight = 0) {

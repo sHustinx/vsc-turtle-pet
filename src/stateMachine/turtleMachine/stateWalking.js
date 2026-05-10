@@ -17,8 +17,7 @@ export class StateWalking extends State {
     enter() {
         // pick new target destination and face towards it
         this.targetX = this.getWalkingTargetX();
-        this.turtle.dirX = this.targetX > this.turtle.posX ? 1 : -1;
-        this.turtle.element.style.transform = this.turtle.dirX > 0 ? 'scaleX(-1)' : 'scaleX(1)';
+        this.turtle.setDirection(this.targetX > this.turtle.posX ? -1 : 1);
 
         if (this.walkInterval) 
             return; // already animating
@@ -73,11 +72,9 @@ export class StateWalking extends State {
     getWalkingTargetX() {
         let dinner = this.turtle.dinner;
         if(dinner) {
-            return dinner.posX - this.turtle.posX > 0 ?
-                dinner.posX + dinner.element.offsetWidth / 2 - this.turtle.getWidth() :
-                dinner.posX + dinner.element.offsetWidth / 2;
+            return dinner.posX;
         } else {
-            return (Math.random() * (PlayGround.getHorizontalLimit(this.turtle.getWidth()) - 10));
+            return 10 + (Math.random() * (PlayGround.getHorizontalLimit(20)));
         }
     }
 }
