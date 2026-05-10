@@ -133,7 +133,8 @@ export class Turtle {
             return false;
         
         debugger;
-        let inRange = this.isTouching(this.dinner.posX, this.dinner.element.offsetWidth);
+        let dinnerWidth = this.dinner.element.offsetWidth;
+        let inRange = this.isTouching(this.dinner.posX, dinnerWidth * 0.7, -dinnerWidth * 0.4);
         if(inRange) {
             // TODO actually eat it :)
         }
