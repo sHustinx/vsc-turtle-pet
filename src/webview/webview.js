@@ -1,5 +1,6 @@
 import { Spawner } from '../actors/spawner.js';
 import { Turtle } from '../actors/turtle.js';
+import { Events } from '../events/events.js';
 
 const playGroundElement = document.querySelector('.playground');
 const turtleElement = document.getElementById('turtle');
@@ -9,18 +10,39 @@ const menuButtonElement = document.getElementById('menu-button');
 const menuElement = document.getElementById('menu');
 const partyButtonElement = document.getElementById('party-button');
 
-// init spawner
-const spawner = new Spawner(playGroundElement);
+export class PlayGround {
+    static element = playGroundElement;
 
-// init turtle
-const turtle = new Turtle(turtleElement, turtleAnimationElement, heartElement, mediaUri);
+    constructor () {
+        Events.test = "PLAYGROUND";
+        // init spawner
+        const spawner = new Spawner(playGroundElement, turtleElement);
 
-// menu functionality
-menuButtonElement.addEventListener('click', () => {
-    menuElement.style.display = menuElement.style.display === 'none' ? 'block' : 'none';
-});
+        // init turtle
+        const turtle = new Turtle(turtleElement, turtleAnimationElement, heartElement, mediaUri);
 
-partyButtonElement.addEventListener('click', () => {
-    turtle.enterParty();
-    menuElement.style.display = 'none';
-});
+        // menu functionality
+        menuButtonElement.addEventListener('click', () => {
+            menuElement.style.display = menuElement.style.display === 'none' ? 'block' : 'none';
+        });
+
+        partyButtonElement.addEventListener('click', () => {
+            turtle.enterParty();
+            menuElement.style.display = 'none';
+        });
+    }
+
+    static getFloorHeight() {
+        return turtleElement.offsetTop + turtleElement.offsetHeight;
+    }
+
+    static getHorizontalLimit(margin) {
+        return playGroundElement.offsetWidth - margin;
+    }
+
+    static isInbounds(value, marginLeft, marginRight) {
+        return value > marginLeft && value < PlayGround.getHorizontalLimit(marginRight);
+    }
+}
+
+const playGround = new PlayGround();

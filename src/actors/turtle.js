@@ -1,9 +1,10 @@
 import { Events } from '../events/events.js';
-import {StateMachine} from '../stateMachine/stateMachine.js';
-import {StateWalking} from '../stateMachine/turtleMachine/stateWalking.js';
-import {StateRest} from '../stateMachine/turtleMachine/stateRest.js';
-import {StateParty} from '../stateMachine/turtleMachine/stateParty.js';
+import { StateMachine } from '../stateMachine/stateMachine.js';
+import { StateWalking } from '../stateMachine/turtleMachine/stateWalking.js';
+import { StateRest } from '../stateMachine/turtleMachine/stateRest.js';
+import { StateParty } from '../stateMachine/turtleMachine/stateParty.js';
 import { StateDoNotDisturb } from '../stateMachine/turtleMachine/stateDoNotDisturb.js';
+import { PlayGround } from '../webview/webview.js';
 
 
 export class Turtle {
@@ -13,11 +14,13 @@ export class Turtle {
         this.heartElement = heartElement;
         this.mediaUri = mediaUri;
         this.turtleUri = `${mediaUri}/mono-standing.png`;
-        this.posX = 50; // start in middle
+        this.posX = PlayGround.element.offsetWidth / 2;
         this.dirX = 1; // start facing right
+        this.size = 1;
+        this.baseWidth = 80;
 
         // set initial position and image
-        this.element.style.left = this.posX + '%';
+        this.element.style.left = this.posX + 'px';
         this.element.style.bottom = '10%';
         this.element.style.top = 'auto';
         this.element.style.transform = 'scaleX(-1)';
@@ -29,6 +32,15 @@ export class Turtle {
             this.showHeart();
             Events.trigger('onPet', { target: this });
         };
+
+        Events.subscribe('dinnerIsServed', (data) => {
+            this.dinner = data.food;
+        });
+        Events.subscribe('onDespawn', (data) => {
+            if(this.dinner = data.spawnable) {
+                this.dinner = null;
+            }
+        });
 
         this.initTurtleMachine();
     }
@@ -51,12 +63,16 @@ export class Turtle {
         // also start walking if turtle is clicked while resting
         this.stateRest.addEventTransition('onPet', this.stateWalking);
 
+        // get new target if turtle is clicked while walking.
+        this.stateWalking.addEventTransition('onPet', this.stateWalking);
+        // move towards dinner, when it is served. this only happens when already walking, because the turtle is lazy
+        this.stateWalking.addEventTransition('dinnerIsServed', this.stateWalking);
+        // eat
+        this.stateWalking.addTransition(this.stateRest, (data) => this.tryEatDinner());
         // when reaching destination, rest for a bit.
         this.stateWalking.addTransition(this.stateRest, (data) => {
             return typeof data.dx === 'number' && Math.abs(data.dx) < 1;
         });
-        // get new target if turtle is clicked while walking.
-        this.stateWalking.addEventTransition('onPet', this.stateWalking);
 
         // transitions for do not disturb state
         this.stateRest.addTransition(this.stateDoNotDisturb, () => this.doNotDisturb === true);
@@ -110,5 +126,35 @@ export class Turtle {
     enterParty() {
         if (this.turtleMachine.getState() === this.stateParty) return; // already partying
         this.onParty = true; 
+    }
+
+    tryEatDinner() {
+        if(!this.dinner) 
+            return false;
+        
+        let foodWidth = this.dinner.element.offsetWidth / 2;
+        debugger;
+        let inRange = this.isTouching(this.dinner.posX, foodWidth, foodWidth);
+        if(inRange) {
+            // TODO actually eat it :)
+        }
+
+        // cleanup
+        if(inRange || PlayGround.isInbounds(this.dinner.posX, this.getWidth())) {
+            this.dinner.despawn();
+            this.dinner = null;
+        }
+
+        return inRange;
+    }
+
+    getWidth() {
+        return this.baseWidth * this.size;
+    }
+
+    isTouching(posX, marginLeft, marginRight) {
+        let leftBounds = this.posX - marginLeft <= posX;
+        let rightBounds = this.posX + marginRight + this.getWidth() >= posX;
+        return leftBounds && rightBounds;
     }
 }

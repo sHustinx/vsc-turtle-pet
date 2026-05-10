@@ -1,4 +1,6 @@
 import { State } from "../state.js";
+import { Spawner } from "../../actors/spawner.js";
+import { PlayGround } from "../../webview/webview.js";
 
 export class StateWalking extends State {
     constructor(
@@ -14,7 +16,8 @@ export class StateWalking extends State {
 
     enter() {
         // pick new target destination and face towards it
-        this.targetX = this.getRandomTargetX();
+        this.targetX = this.getWalkingTargetX();
+        debugger;
         this.turtle.dirX = this.targetX > this.turtle.posX ? 1 : -1;
         this.turtle.element.style.transform = this.turtle.dirX > 0 ? 'scaleX(-1)' : 'scaleX(1)';
 
@@ -39,35 +42,44 @@ export class StateWalking extends State {
 
         // Only finalize position if we've reached the target
         if (typeof this.turtle.dx === 'number' && Math.abs(this.turtle.dx) < 1) {
-            this.turtle.posX = this.targetX;
-            this.turtle.element.style.left = this.turtle.posX + '%';
+            this.turtle.posX += this.turtle.dx;
+            this.turtle.element.style.left = this.turtle.posX + 'px';
         }
     }
 
-    perform(stateMachine) {  
-        let speed = 0.05;
+    perform(stateMachine) {
+        let speed = PlayGround.element.offsetWidth * 0.0005;
         this.turtle.dx = this.targetX - this.turtle.posX; // distance to target
-        
+        let moveX = this.turtle.posX + Math.sign(this.turtle.dx) * speed;
+
+        if(!PlayGround.isInbounds(moveX, 10, this.turtle.getWidth())) {
+            // stop at edges
+            this.turtle.dx = 0; 
+        } else {
+            // move towards target
+            this.turtle.posX = moveX;
+            this.turtle.element.style.left = this.turtle.posX + 'px';
+        }
+
         let nextState = this.checkTransitions(this.turtle);
         if (nextState) {
             return nextState;
         }
-        
-        // move towards target
-        this.turtle.posX += Math.sign(this.turtle.dx) * speed;
-        this.turtle.element.style.left = this.turtle.posX + '%';
 
         return null;
     }
 
-    // get random target X position, accounting for turtle png width (80px)
+    // get walking target X position, accounting for turtle width
     // (otherwise he walks off the screen)
-    getRandomTargetX() {
-        const containerWidth = document.querySelector('.playground').offsetWidth;
-        const turtleWidth = 80;
-        const maxX = ((containerWidth - turtleWidth) / containerWidth) * 100; 
-        const newTarget = 10 + (Math.random() * (maxX - 10));
-        // console.log('getRandomTargetX:', newTarget, 'posX:', posX);
-        return newTarget;
+    getWalkingTargetX() {
+        debugger;
+        let dinner = this.turtle.dinner;
+        if(dinner) {
+            return dinner.posX - this.turtle.posX > 0 ?
+                dinner.posX + dinner.element.offsetWidth / 2 - this.turtle.getWidth() :
+                dinner.posX + dinner.element.offsetWidth / 2;
+        } else {
+            return (Math.random() * (PlayGround.getHorizontalLimit(this.turtle.getWidth()) - 10));
+        }
     }
 }

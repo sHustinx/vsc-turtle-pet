@@ -124,6 +124,19 @@ body.vscode-light {
     transform: translateX(-50%) translateY(-30px);
 }
 
+.spawnable {
+    position: absolute;
+    font-size: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    z-index: 11;
+}
+
+.spawnable.show {
+    opacity: 1;
+}
+
 .disco-ball {
   position: absolute;
   top: -20px;
