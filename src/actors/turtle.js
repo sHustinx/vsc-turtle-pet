@@ -132,9 +132,8 @@ export class Turtle {
         if(!this.dinner) 
             return false;
         
-        let foodWidth = this.dinner.element.offsetWidth / 2;
         debugger;
-        let inRange = this.isTouching(this.dinner.posX, foodWidth, foodWidth);
+        let inRange = this.isTouching(this.dinner.posX, this.dinner.element.offsetWidth);
         if(inRange) {
             // TODO actually eat it :)
         }
@@ -152,7 +151,7 @@ export class Turtle {
         return this.baseWidth * this.size;
     }
 
-    isTouching(posX, marginLeft, marginRight) {
+    isTouching(posX, marginLeft = 0, marginRight = 0) {
         let leftBounds = this.posX - marginLeft <= posX;
         let rightBounds = this.posX + marginRight + this.getWidth() >= posX;
         return leftBounds && rightBounds;

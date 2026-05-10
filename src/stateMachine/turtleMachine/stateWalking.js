@@ -17,7 +17,6 @@ export class StateWalking extends State {
     enter() {
         // pick new target destination and face towards it
         this.targetX = this.getWalkingTargetX();
-        debugger;
         this.turtle.dirX = this.targetX > this.turtle.posX ? 1 : -1;
         this.turtle.element.style.transform = this.turtle.dirX > 0 ? 'scaleX(-1)' : 'scaleX(1)';
 
@@ -72,7 +71,6 @@ export class StateWalking extends State {
     // get walking target X position, accounting for turtle width
     // (otherwise he walks off the screen)
     getWalkingTargetX() {
-        debugger;
         let dinner = this.turtle.dinner;
         if(dinner) {
             return dinner.posX - this.turtle.posX > 0 ?
