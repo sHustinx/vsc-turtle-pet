@@ -67,8 +67,6 @@ export class Turtle {
         // also start walking if turtle is clicked while resting
         this.stateRest.addEventTransition('onPet', this.stateWalking);
 
-        // get new target if turtle is clicked while walking.
-        this.stateWalking.addEventTransition('onPet', this.stateWalking);
         // move towards dinner, when it is served. this only happens when already walking, because the turtle is lazy
         this.stateWalking.addEventTransition('dinnerIsServed', this.stateWalking);
         // eat
@@ -134,7 +132,7 @@ export class Turtle {
                 }
             }
 
-            this.heartFollowInterval = setInterval(() => {
+            this.heartFollowInterval = this.heartFollowInterval ?? setInterval(() => {
                 // position heart above turtle
                 let offsetX = this.element.offsetWidth * (this.dirX < 0 ? 1.1 : -0.1);
                 this.heartElement.style.left =  this.posX + offsetX + 'px';
