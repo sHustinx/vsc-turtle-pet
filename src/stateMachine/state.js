@@ -16,7 +16,6 @@ export class State {
         this.eventHandlers = new Map();
         this.eventTransitions.forEach(([event, state]) => {
             const handler = (data) => {
-                // console.log(`[${this.constructor.name}] event "${event}" fired, triggers before push:`, this.eventTriggers.length);
                 this.eventTriggers.push(event);
             };
             this.eventHandlers.set(event, handler);
